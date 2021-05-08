@@ -1,0 +1,52 @@
+﻿  Flock.cpp
+C:\VS Projects\EvoSim\EvoSim\src\Flock.cpp(34,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Flock.cpp(40,23): warning C4018: '<': signed/unsigned mismatch
+  Gui.cpp
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(56,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(56,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(61,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(61,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(86,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(89,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(89,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(145,53): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(145,38): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(149,53): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(149,38): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(185,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(193,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(220,23): warning C4018: '<': signed/unsigned mismatch
+  Organism.cpp
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(30,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(30,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(43,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(43,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(48,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(48,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(71,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(139,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(177,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(190,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(222,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(237,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(250,65): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(250,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
+  EvoSim.vcxproj -> C:\VS Projects\EvoSim\Debug\EvoSim.exe
