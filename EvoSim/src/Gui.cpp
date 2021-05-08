@@ -51,7 +51,7 @@ void Gui::run()
     music.play();
 
     //Create initial organisms.
-	for (int i = 0; i < 10; i++) 
+    for (int i = 0; i < 10; i++) 
     {
 		Organism organism(width / 3, height / 3); // Starts all boids in the center of the screen
 		sf::CircleShape shape(8, 3);
