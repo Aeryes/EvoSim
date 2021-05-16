@@ -1,14 +1,15 @@
 ﻿  Gui.cpp
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(57,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(57,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(62,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(62,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(86,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(89,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(89,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(120,27): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(140,27): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(273,23): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(285,23): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(312,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(74,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(74,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(79,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(79,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(103,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(106,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(106,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(138,27): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(158,27): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(301,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(313,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(340,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(456,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   EvoSim.vcxproj -> C:\VS Projects\EvoSim\Debug\EvoSim.exe

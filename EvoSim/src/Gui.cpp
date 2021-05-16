@@ -13,6 +13,20 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <direct.h>
+
+//Prints the working directory.
+void PrintFullPath()
+{
+    char full[_MAX_PATH];
+    if (_fullpath(full, ".//", _MAX_PATH) != NULL)
+        printf("Full path is: %s\n", full);
+    else
+        printf("Invalid path\n");
+}
 
 Gui::Gui()
 {
@@ -41,6 +55,9 @@ void Gui::run()
     {
         cout << "Music cant play..." << endl;
     }
+
+    //Load the text for the GUI.
+    loadText();
 
     // Change some parameters
     music.setPosition(0, 1, 10); // change its 3D position
@@ -97,6 +114,7 @@ void Gui::run()
 
         m_foodObjStorage.push_back(foodObj);
     }
+
 
 	while (m_window.isOpen()) 
     {
@@ -203,6 +221,10 @@ void Gui::handleEvents()
             m_shapes.erase(m_shapes.begin() + i);
         }
     }
+
+    //Display all the text vaalues to the screen.
+    displayText();
+
 }
 
 void Gui::handleInput()
@@ -268,6 +290,12 @@ void Gui::handleInput()
 void Gui::render()
 {
     m_window.clear();
+
+    //Draw all text to the screen.
+    m_window.draw(m_text);
+    m_window.draw(m_numberAlive);
+    m_window.draw(m_foodInPlay);
+    m_window.draw(m_timeElapsed);
 
     //Draws all the food to the screen and sets positions.
     for (int i = 0; i < m_foodObjStorage.size(); i++)
@@ -353,4 +381,79 @@ bool Gui::isCollided(Organism organism, Food food)
     }
     
     return false;
+}
+
+//This functions loads the text for the GUI window.
+void Gui::loadText()
+{
+    //Prepare the statistics text.
+    // select the font
+    if (!m_font.loadFromFile("Roboto-Thin.ttf"))
+    {
+        // error...
+        cout << "Font could not load..." << endl;
+    }
+
+    //DEBUG
+    PrintFullPath();
+
+    m_text.setFont(m_font); // font is a sf::Font
+    // set the string to display
+    m_text.setString("EvoSim");
+    // set the character size
+    m_text.setCharacterSize(24); // in pixels, not points!
+    // set the color
+    m_text.setFillColor(sf::Color::Red);
+    // set the text style
+    m_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+    m_numberAlive.setFont(m_font); // font is a sf::Font
+    // set the character size
+    m_numberAlive.setCharacterSize(24); // in pixels, not points!
+    // set the color
+    m_numberAlive.setFillColor(sf::Color::Red);
+    // set the text style
+    m_numberAlive.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    //Set the position of the text.
+    m_numberAlive.setPosition(0, 50);
+
+    m_foodInPlay.setFont(m_font); // font is a sf::Font
+    // set the character size
+    m_foodInPlay.setCharacterSize(24); // in pixels, not points!
+    // set the color
+    m_foodInPlay.setFillColor(sf::Color::Red);
+    // set the text style
+    m_foodInPlay.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    //Set the position of the text.
+    m_foodInPlay.setPosition(0, 100);
+
+    m_timeElapsed.setFont(m_font); // font is a sf::Font
+    // set the character size
+    m_timeElapsed.setCharacterSize(24); // in pixels, not points!
+    // set the color
+    m_timeElapsed.setFillColor(sf::Color::Red);
+    // set the text style
+    m_timeElapsed.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    //Set the position of the text.
+    m_timeElapsed.setPosition(0, 150);
+}
+
+//Displays the updated text on the screen.
+void Gui::displayText()
+{
+    //Count the number of organisms alive and display in text.
+    int numberAliveTemp = m_flock.getSize() + m_notFlocking.getSize();
+    auto result = std::to_string(numberAliveTemp);
+    m_numberAlive.setString("Organisms Alive: " + result);
+
+    //Count the number of food objects in play and set the text.
+    int foodTemp = m_foodObjStorage.size();
+    auto resultFood = std::to_string(foodTemp);
+    m_foodInPlay.setString("Food Items: " + resultFood);
+
+    //Get simulation time elapsed and set text.
+    m_simTimerSeconds = m_simTimer.getElapsedTime();
+    int timeTemp = m_simTimerSeconds.asSeconds();
+    auto resultTime = std::to_string(timeTemp);
+    m_timeElapsed.setString("Time Elapsed (Seconds): " + resultTime);
 }

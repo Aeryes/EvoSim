@@ -35,6 +35,15 @@ private:
 
 	sf::RenderWindow m_window;
 
+	sf::Text m_text;
+	sf::Text m_numberAlive;
+	sf::Text m_foodInPlay;
+    sf::Text m_timeElapsed;
+	sf::Font m_font;
+
+	sf::Clock m_simTimer;
+	sf::Time  m_simTimerSeconds;
+
 	Flock m_flock;
 	Flock m_notFlocking;
 
@@ -48,8 +57,11 @@ private:
 	void render();
 	void handleInput();
 	void handleEvents();
+	void loadText();
+	void displayText();
 
 	bool isCollided(Organism organism, Food food);
+
 	
 };
 
