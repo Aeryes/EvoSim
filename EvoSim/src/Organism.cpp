@@ -26,35 +26,37 @@ const int window_width = desktopTemp.width;
 
 Organism::Organism(float x, float y)
 {
-    acceleration = Pvector(0, 0);
-    velocity = Pvector(rand() % 3 - 2, rand() % 3 - 2);
-    location = Pvector(x, y);
-    maxSpeed = 3.5;
-    maxForce = 0.5;
+    m_acceleration = Pvector(0, 0);
+    m_velocity = Pvector(rand() % 3 - 2, rand() % 3 - 2);
+    m_location = Pvector(x, y);
+    m_maxSpeed = 3.5;
+    m_maxForce = 0.5;
 }
 
 Organism::Organism(float x, float y, bool predCheck, bool flockTrait)
 {
-    predator = predCheck;
-    hasFlockTrait = flockTrait;
+    m_predator = predCheck;
+    m_hasFlockTrait = flockTrait;
+
     if (predCheck == true) {
-        maxSpeed = 5.5;
-        maxForce = 0.5;
-        velocity = Pvector(rand() % 3 - 1, rand() % 3 - 1);
+        m_maxSpeed = 5.5;
+        m_maxForce = 0.5;
+        m_velocity = Pvector(rand() % 3 - 1, rand() % 3 - 1);
     }
     else {
-        maxSpeed = 3.5;
-        maxForce = 0.5;
-        velocity = Pvector(rand() % 3 - 2, rand() % 3 - 2);
+        m_maxSpeed = 3.5;
+        m_maxForce = 0.5;
+        m_velocity = Pvector(rand() % 3 - 2, rand() % 3 - 2);
     }
-    acceleration = Pvector(0, 0);
-    location = Pvector(x, y);
+
+    m_acceleration = Pvector(0, 0);
+    m_location = Pvector(x, y);
 }
 
 // Adds force Pvector to current force Pvector
 void Organism::applyForce(const Pvector& force)
 {
-    acceleration.addVector(force);
+    m_acceleration.addVector(force);
 }
 
 // Separation
@@ -62,7 +64,8 @@ void Organism::applyForce(const Pvector& force)
 Pvector Organism::separation(const vector<Organism>& organisms, float sep)
 {
     // Distance of field of vision for separation between organisms
-    desiredseparation = sep;
+    m_desiredseparation = sep;
+
     //Direction of movement and actual movement vector.
     Pvector steer(0, 0);
     int count = 0;
@@ -72,13 +75,13 @@ Pvector Organism::separation(const vector<Organism>& organisms, float sep)
     {
 
         // Calculate distance from current organism to organism we're looking at
-        float d = location.distance(organisms[i].location);
+        float d = m_location.distance(organisms[i].m_location);
 
         // If this is a fellow organism and it's too close, move away from it
-        if ((d > 0) && (d < desiredseparation)) 
+        if ((d > 0) && (d < m_desiredseparation)) 
         {
             Pvector diff(0, 0);
-            diff = diff.subTwoVector(location, organisms[i].location);
+            diff = diff.subTwoVector(m_location, organisms[i].m_location);
             diff.normalize();
             diff.divScalar(d);      // Weight by distance
             steer.addVector(diff);
@@ -87,11 +90,11 @@ Pvector Organism::separation(const vector<Organism>& organisms, float sep)
 
         // If current organism is a predator and the organism we're looking at is also
         // a predator, then separate only slightly
-        if ((d > 0) && (d < desiredseparation) && predator == true
-            && organisms[i].predator == true) 
+        if ((d > 0) && (d < m_desiredseparation) && m_predator == true
+            && organisms[i].m_predator == true) 
         {
             Pvector pred2pred(0, 0);
-            pred2pred = pred2pred.subTwoVector(location, organisms[i].location);
+            pred2pred = pred2pred.subTwoVector(m_location, organisms[i].m_location);
             pred2pred.normalize();
             pred2pred.divScalar(d);
             steer.addVector(pred2pred);
@@ -100,10 +103,10 @@ Pvector Organism::separation(const vector<Organism>& organisms, float sep)
 
         // If current organism is not a predator, but the organism we're looking at is
         // a predator, then create a large separation Pvector
-        else if ((d > 0) && (d < desiredseparation + 70) && organisms[i].predator == true) 
+        else if ((d > 0) && (d < m_desiredseparation + 70) && organisms[i].m_predator == true) 
         {
             Pvector pred(0, 0);
-            pred = pred.subTwoVector(location, organisms[i].location);
+            pred = pred.subTwoVector(m_location, organisms[i].m_location);
             pred.mulScalar(900);
             steer.addVector(pred);
             count++;
@@ -118,9 +121,9 @@ Pvector Organism::separation(const vector<Organism>& organisms, float sep)
     {
         // Steering = Desired - Velocity
         steer.normalize();
-        steer.mulScalar(maxSpeed);
-        steer.subVector(velocity);
-        steer.limit(maxForce);
+        steer.mulScalar(m_maxSpeed);
+        steer.subVector(m_velocity);
+        steer.limit(m_maxForce);
     }
 
     return steer;
@@ -138,10 +141,10 @@ Pvector Organism::alignment(const vector<Organism>& organisms)
 
     for (int i = 0; i < organisms.size(); i++) 
     {
-        float d = location.distance(organisms[i].location);
+        float d = m_location.distance(organisms[i].m_location);
         if ((d > 0) && (d < neighbordist)) 
         { // 0 < d < 50
-            sum.addVector(organisms[i].velocity);
+            sum.addVector(organisms[i].m_velocity);
             count++;
         }
     }
@@ -151,11 +154,11 @@ Pvector Organism::alignment(const vector<Organism>& organisms)
     {
         sum.divScalar((float)count);// Divide sum by the number of close organisms (average of velocity)
         sum.normalize();            // Turn sum into a unit vector, and
-        sum.mulScalar(maxSpeed);    // Multiply by maxSpeed
+        sum.mulScalar(m_maxSpeed);    // Multiply by maxSpeed
         // Steer = Desired - Velocity
         Pvector steer;
-        steer = steer.subTwoVector(sum, velocity); //sum = desired(average)
-        steer.limit(maxForce);
+        steer = steer.subTwoVector(sum, m_velocity); //sum = desired(average)
+        steer.limit(m_maxForce);
         return steer;
     }
     else 
@@ -176,11 +179,11 @@ Pvector Organism::cohesion(const vector<Organism>& organisms)
 
     for (int i = 0; i < organisms.size(); i++) 
     {
-        float d = location.distance(organisms[i].location);
+        float d = m_location.distance(organisms[i].m_location);
 
         if ((d > 0) && (d < neighbordist)) 
         {
-            sum.addVector(organisms[i].location);
+            sum.addVector(organisms[i].m_location);
             count++;
         }
     }
@@ -206,12 +209,12 @@ Pvector Organism::seek(const Pvector& v)
 
     // Normalize desired and scale to maximum speed
     desired.normalize();
-    desired.mulScalar(maxSpeed);
+    desired.mulScalar(m_maxSpeed);
 
     // Steering = Desired minus Velocity
-    acceleration.subTwoVector(desired, velocity);
-    acceleration.limit(maxForce);  // Limit to maximum steering force
-    return acceleration;
+    m_acceleration.subTwoVector(desired, m_velocity);
+    m_acceleration.limit(m_maxForce);  // Limit to maximum steering force
+    return m_acceleration;
 }
 
 // Modifies velocity, location, and resets acceleration with values that
@@ -219,42 +222,48 @@ Pvector Organism::seek(const Pvector& v)
 void Organism::update()
 {
     //To make the slow down not as abrupt
-    acceleration.mulScalar(.4);
+    m_acceleration.mulScalar(.4);
+
     // Update velocity
-    velocity.addVector(acceleration);
+    m_velocity.addVector(m_acceleration);
+
     // Limit speed
-    velocity.limit(maxSpeed);
+    m_velocity.limit(m_maxSpeed);
+
     //Moves the organisms.
-    location.addVector(velocity);
+    m_location.addVector(m_velocity);
+
     // Reset accelertion to 0 each cycle to allow smoooth movement dring flocking.
-    acceleration.mulScalar(0);
+    m_acceleration.mulScalar(0);
 }
 
 //Modifies velocity, location and acceleration for non-flocking organisms.
 void Organism::updateNonFlock()
 {
     //To make the slow down not as abrupt
-    acceleration.mulScalar(.4);
+    m_acceleration.mulScalar(.4);
+
     // Update velocity
-    velocity.addVector(acceleration);
+    m_velocity.addVector(m_acceleration);
+
     // Limit speed
-    velocity.limit(maxSpeed);
+    m_velocity.limit(m_maxSpeed);
 
     //Moves the organisms.
-    sf::Time elapsed = this->movementClock.getElapsedTime();
+    sf::Time elapsed = m_movementClock.getElapsedTime();
 
     if (elapsed.asSeconds() > 3)
     {
-        movementClock.restart();
+        m_movementClock.restart();
 
-        velocity.subVector(Pvector(rand() % 2 - 0.5, rand() % 2 - 0.5));
+        m_velocity.subVector(Pvector(rand() % 2 - 0.5, rand() % 2 - 0.5));
     }
 
-    location.addVector(velocity);
-    location.addVector(velocity);
+    m_location.addVector(m_velocity);
+    m_location.addVector(m_velocity);
  
     // Reset accelertion to 0 each cycle to allow smoooth movement dring flocking.
-    acceleration.mulScalar(0);
+    m_acceleration.mulScalar(0);
 }
 
 // Run flock() on the flock of organisms.
@@ -280,10 +289,12 @@ void Organism::flock(const vector<Organism>& v, float sepr)
     Pvector sep = separation(v, sepr);
     Pvector ali = alignment(v);
     Pvector coh = cohesion(v);
+
     // Arbitrarily weight these forces
     sep.mulScalar(1.5);
     ali.mulScalar(1.0); // Might need to alter weights for different characteristics
     coh.mulScalar(1.0);
+
     // Add the force vectors to acceleration
     applyForce(sep);
     applyForce(ali);
@@ -294,10 +305,10 @@ void Organism::flock(const vector<Organism>& v, float sepr)
 // the other side.
 void Organism::borders()
 {
-    if (location.x < 0)    location.x += w_width;
-    if (location.y < 0)    location.y += w_height;
-    if (location.x > 1920) location.x -= w_width;
-    if (location.y > 1080) location.y -= w_height;
+    if (m_location.x < 0)    m_location.x += w_width;
+    if (m_location.y < 0)    m_location.y += w_height;
+    if (m_location.x > 1920) m_location.x -= w_width;
+    if (m_location.y > 1080) m_location.y -= w_height;
 }
 
 // Calculates the angle for the velocity of a boid which allows the visual
@@ -307,4 +318,32 @@ float Organism::angle(const Pvector& v)
     // From the definition of the dot product
     float angle = (float)(atan2(v.x, -v.y) * 180.0 / PI);
     return angle;
+}
+
+//This function spends energy while the organism is alive.
+void Organism::spendEnergy()
+{
+    this->m_energyStore = this->m_energyStore - this->m_energyUseLevel;
+    cout << "ENERGY STORE: " << this->m_energyStore << endl;
+}
+
+//Getters and setters
+void Organism::setEnergyStore(int amount)
+{
+    this->m_energyStore = this->m_energyStore + amount;
+}
+
+int Organism::getEnergyStore()
+{
+    return this->m_energyStore;
+}
+
+void Organism::setEnergyUsetime(int value)
+{
+    this->m_energyUseTime = value;
+}
+
+int Organism::getEnergyUseTime()
+{
+    return this->m_energyUseTime;
 }

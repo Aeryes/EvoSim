@@ -8,15 +8,21 @@
 
 #include "Food.h"
 
-Food::Food(int energyLevel, sf::CircleShape shape)
+Food::Food(int energyAmount, sf::CircleShape shape)
 {
-	this->energyLevel = energyLevel;
-	this->shape = shape;
+	m_energyAmount = energyAmount;
+	m_shape = shape;
 }
 
-void Food::getPosition()
+//Getters and setters.
+void Food::setPosition(Pvector vector)
 {	
-	sf::Vector2f sfmlPosition = this->shape.getPosition();
-	this->position.x = sfmlPosition.x;
-	this->position.y = sfmlPosition.y;
+	//sf::Vector2f sfmlPosition = m_shape.getPosition();
+	m_position.x = vector.x;
+	m_position.y = vector.y;
+}
+
+Pvector Food::getPosition()
+{
+	return m_position;
 }

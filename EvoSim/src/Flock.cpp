@@ -17,9 +17,14 @@ int Flock::getSize()
     return flock.size();
 }
 
-Organism Flock::getOrganism(int i)
+Organism &Flock::getOrganism(int i)
 {
     return flock[i];
+}
+
+void Flock::removeOrganism(int index)
+{
+    this->flock.erase(flock.begin() + index);
 }
 
 void Flock::addOrganism(const Organism& b)

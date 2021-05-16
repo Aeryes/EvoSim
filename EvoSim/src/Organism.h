@@ -18,6 +18,7 @@
 #include <vector>
 #include "Pvector.h"
 #include "SFML/System.hpp"
+#include "SFML/Graphics.hpp"
 #include <Genetics.h>
 
 class Organism
@@ -27,35 +28,27 @@ public:
     Organism(float x, float y, bool predCheck, bool hasFlockTrait);
 
     //Movement values.
-    Pvector location;
-    Pvector velocity;
-    Pvector acceleration;
+    Pvector m_location;
+    Pvector m_velocity;
+    Pvector m_acceleration;
 
-    float maxSpeed;
-    float maxForce;
-
-    //Organism life values.
-    int health = 100;
-    int defense = 0;
-    int attack = 0;
-    int energyStore = 1000;
-    int energyUseLevel = 50;
-    int energyGainLevel = 5;
+    float m_maxSpeed;
+    float m_maxForce;
 
     //Trait values.
-    bool predator;
+    bool m_predator;
 
     //This vector contains a list of trait object belonging to the organism.
-    vector<Genetics> traitList;
+    vector<Genetics> m_traitList;
 
     //Timers.
-    sf::Clock movementClock;
-    sf::Clock timeAlive;
-    sf::Clock mutationTimer;
+    sf::Clock m_movementClock;
+    sf::Clock m_energyTimer;
+    sf::Clock m_mutationTimer;
 
     //Flocking fields.
-    bool hasFlockTrait = false;
-    float desiredseparation;
+    bool m_hasFlockTrait = false;
+    float m_desiredseparation;
 
     void applyForce(const Pvector& force);
 
@@ -77,6 +70,23 @@ public:
     void borders();
     float angle(const Pvector& v);
 
+    //Getters and setters.
+    void setEnergyStore(int amount);
+    int getEnergyStore();
 
+    void setEnergyUsetime(int value);
+    int getEnergyUseTime();
+
+    void spendEnergy();
+
+private:
+    //Organism life values.
+    int m_health = 100;
+    int m_defense = 0;
+    int m_attack = 0;
+    int m_energyStore = 200;
+    int m_energyUseLevel = 100;
+    int m_energyUseTime = 10;
 };
+
 

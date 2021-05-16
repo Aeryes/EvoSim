@@ -16,17 +16,18 @@
 
 Gui::Gui()
 {
-	this->organismSize = 10.0;
-    this->foodSize = 5.0;
+	m_organismSize = 10.0;
+    m_foodSize = 5.0;
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
-	this->height = desktop.height;
-	this->width = desktop.width;
-	this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSim", sf::Style::None);
+	m_height = desktop.height;
+	m_width = desktop.width;
+	m_window.create(sf::VideoMode(m_width, m_height, desktop.bitsPerPixel), "EvoSim", sf::Style::None);
 
 	// Try to achieve 60 FPS.
-	window.setFramerateLimit(60);
+	m_window.setFramerateLimit(60);
+
 };
 
 void Gui::run()
@@ -51,38 +52,37 @@ void Gui::run()
     music.play();
 
     //Create initial organisms.
-    for (int i = 0; i < 10; i++) 
+	for (int i = 0; i < 5; i++) 
     {
-		Organism organism(width / 3, height / 3); // Starts all boids in the center of the screen
+		Organism organism(m_width / 3, m_height / 3); // Starts all boids in the center of the screen
 		sf::CircleShape shape(8, 3);
 
 		// Changing the Visual Properties of the shape
 		// shape.setPosition(b.location.x, b.location.y); // Sets position of shape to random location that boid was set to.
-		shape.setPosition(width, height); // Testing purposes, starts all shapes in the center of screen.
+		shape.setPosition(m_width, m_height); // Testing purposes, starts all shapes in the center of screen.
 		shape.setOutlineColor(sf::Color(0, 255, 0));
 		shape.setFillColor(sf::Color::Green);
 		shape.setOutlineColor(sf::Color::White);
 		shape.setOutlineThickness(1);
-		shape.setRadius(organismSize);
+		shape.setRadius(m_organismSize);
 
         //Check to see if the Organism has the flock trait, if it does add to active flock.
-        if(organism.hasFlockTrait)
+        if(organism.m_hasFlockTrait)
         {
-            flock.addOrganism(organism);
-            shapes.push_back(shape);
+            m_flock.addOrganism(organism);
+            m_shapes.push_back(shape);
         }
         else
         {
-            notFlocking.addOrganism(organism);
-            shapesNotFlocking.push_back(shape);
+            m_notFlocking.addOrganism(organism);
+            m_shapesNotFlocking.push_back(shape);
         }
-
 	}
 
     //Create food.
-    for (int i = 0; i < foodAmount; i++)
+    for (int i = 0; i < m_foodAmount; i++)
     {
-        //Create shape aand food object.
+        //Create shape and food object.
         sf::CircleShape food(rand() % 100, 4);
 
         //Set the position of the food.
@@ -91,19 +91,20 @@ void Gui::run()
         food.setFillColor(sf::Color::White);
         food.setOutlineColor(sf::Color::White);
         food.setOutlineThickness(2);
-        food.setRadius(foodSize);
+        food.setRadius(m_foodSize);
 
         Food foodObj(100, food);
 
-        foodObjStorage.push_back(foodObj);
+        m_foodObjStorage.push_back(foodObj);
     }
 
-	while (window.isOpen()) 
+	while (m_window.isOpen()) 
     {
+        //Handles events from the simulation.
+        handleEvents();
+
         //Handles keyboard and mouse inpput from the user.
 		handleInput();
-
-        handleEvents();
 
         //Renders all of the organisms to the screen along with anything else that needs to be drawn.
 		render();
@@ -113,14 +114,101 @@ void Gui::run()
 //Handles simulation events such as collision detection and genetic mutations.
 void Gui::handleEvents()
 {
-    //Check to see if any organisms collided with any food objects.
+    //Check to see if any non-flocking organisms collided with any food objects.
+    for (int i = 0; i < m_flock.getSize(); i++)
+    {
+        for (int k = 0; k < m_foodObjStorage.size(); k++)
+        {
+            //Get the amount of energy to add to the organism if food is consumed.
+            int energy = m_foodObjStorage[k].m_energyAmount;
 
+            //If the organism collides with the food then add energy to its m_energyStore and remove the food.
+            if (isCollided(m_flock.getOrganism(i), m_foodObjStorage[k]))
+            {
+                //Increase the organisms energy level.
+                m_flock.getOrganism(i).setEnergyStore(energy);
+
+                //Remove the consumed food from the food vector.
+                m_foodObjStorage.erase(m_foodObjStorage.begin() + k);
+            }
+        }
+    }
+
+    //Check to see if any flocking organisms collided with any food objects.
+    for (int i = 0; i < m_notFlocking.getSize(); i++)
+    {
+        for (int k = 0; k < m_foodObjStorage.size(); k++)
+        {
+            //Get the amount of energy to add to the organism if food is consumed.
+            int energy = m_foodObjStorage[k].m_energyAmount;
+
+            //If the organism collides with the food then add energy to its m_energyStore and remove the food.
+            if (isCollided(m_notFlocking.getOrganism(i), m_foodObjStorage[k]))
+            {
+                //Increase the organisms energy level.
+                m_notFlocking.getOrganism(i).setEnergyStore(energy);
+
+                //Remove the consumed food from the food vector.
+                m_foodObjStorage.erase(m_foodObjStorage.begin() + k);
+            }
+        }
+    }
+
+    //Energy spending for all alive flocking organisms.
+    for (int i = 0; i < m_flock.getSize(); i++)
+    {
+        sf::Time elapsed = m_flock.getOrganism(i).m_energyTimer.getElapsedTime();
+
+        //Kill the organism if its energy store reaches 0.
+        if (elapsed.asSeconds() >= m_flock.getOrganism(i).getEnergyUseTime())
+        {
+            m_flock.getOrganism(i).spendEnergy();
+
+            //Restart the organisms alive timer.
+            m_flock.getOrganism(i).m_energyTimer.restart();
+        }
+    }
+
+    //Energy spending for all alive non-flocking organisms.
+    for (int i = 0; i < m_notFlocking.getSize(); i++)
+    {
+        sf::Time elapsed = m_notFlocking.getOrganism(i).m_energyTimer.getElapsedTime();
+
+        //Kill the organism if its energy store reaches 0.
+        if (elapsed.asSeconds() >= m_notFlocking.getOrganism(i).getEnergyUseTime())
+        {
+            m_notFlocking.getOrganism(i).spendEnergy();
+
+            //Restart the organisms alive timer.
+            m_notFlocking.getOrganism(i).m_energyTimer.restart();
+        }
+    }
+
+    //Remove non-flocking organisms with < 0 energy storage.
+    for (int i = 0; i < m_notFlocking.getSize(); i++)
+    {
+        if (m_notFlocking.getOrganism(i).getEnergyStore() <= 0)
+        {
+            m_notFlocking.removeOrganism(i);
+            m_shapesNotFlocking.erase(m_shapesNotFlocking.begin() + i);
+        }
+    }
+
+    //Remove flocking organisms with , 0 energy storage.
+    for (int i = 0; i < m_flock.getSize(); i++)
+    {
+        if (m_flock.getOrganism(i).getEnergyStore() <= 0)
+        {
+            m_flock.removeOrganism(i);
+            m_shapes.erase(m_shapes.begin() + i);
+        }
+    }
 }
 
 void Gui::handleInput()
 {
     sf::Event event;
-    while (window.pollEvent(event)) 
+    while (m_window.pollEvent(event)) 
     {
         // "close requested" event: we close the window
         // Implemented alternate ways to close the window. (Pressing the escape, X, and BackSpace key also close the program.)
@@ -132,16 +220,16 @@ void Gui::handleInput()
             (event.type == sf::Event::KeyPressed &&
                 event.key.code == sf::Keyboard::X))
         {
-            window.close();
+            m_window.close();
         }
     }
 
     // Check for mouse click, draws and adds Organism to flock if so.
     // These Organisms will automaticaly flock.
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+    /*if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
     {
         // Gets mouse coordinates, sets that as the location of the Organism and the shape
-        sf::Vector2i mouseCoords = sf::Mouse::getPosition(window);
+        sf::Vector2i mouseCoords = sf::Mouse::getPosition(m_window);
         Organism organism(mouseCoords.x, mouseCoords.y, false, true);
         sf::CircleShape shape(10, 3);
 
@@ -151,24 +239,24 @@ void Gui::handleInput()
         shape.setFillColor(sf::Color(255, 0, 0));
         shape.setOutlineColor(sf::Color::White);
         shape.setOutlineThickness(1);
-        shape.setRadius(organismSize);
+        shape.setRadius(m_organismSize);
 
         // Adds newly created Organism and shape to their respective data structure
         //Check to see if the Organism has the flock trait, if it does add to active flock.
-        if(organism.hasFlockTrait)
+        if(organism.m_hasFlockTrait)
         {
-            flock.addOrganism(organism);
-            shapes.push_back(shape);
+            m_flock.addOrganism(organism);
+            m_shapes.push_back(shape);
         }
         else
         {
-            notFlocking.addOrganism(organism);
-            shapesNotFlocking.push_back(shape);
+            m_notFlocking.addOrganism(organism);
+            m_shapesNotFlocking.push_back(shape);
         }
 
         // New Shape is drawn
-        window.draw(shapes[shapes.size() - 1]);
-    }
+        m_window.draw(m_shapes[m_shapes.size() - 1]);
+    }*/
 }
 
 /*
@@ -179,71 +267,90 @@ void Gui::handleInput()
 */
 void Gui::render()
 {
-    window.clear();
+    m_window.clear();
 
-    //Draws all the food to the screen.
-    for (int i = 0; i < foodObjStorage.size(); i++)
+    //Draws all the food to the screen and sets positions.
+    for (int i = 0; i < m_foodObjStorage.size(); i++)
     {
-        window.draw(foodObjStorage[i].shape);
+        m_window.draw(m_foodObjStorage[i].m_shape);
+
+        //Set the position off the food.
+        sf::Vector2f sfmlPosition = m_foodObjStorage[i].m_shape.getPosition();
+        m_foodObjStorage[i].m_position.x = sfmlPosition.x;
+        m_foodObjStorage[i].m_position.y = sfmlPosition.y;
     }
 
     // Draws all of the Organisms out, and applies functions that are needed to update.
     //Draw all of the non-flocking organisms.
-    for (int i = 0; i < shapesNotFlocking.size(); i++) 
+    for (int i = 0; i < m_shapesNotFlocking.size(); i++)
     {
-        window.draw(shapesNotFlocking[i]);
+        m_window.draw(m_shapesNotFlocking[i]);
 
         // Matches up the location of the shape to the organism.
-        shapesNotFlocking[i].setPosition(notFlocking.getOrganism(i).location.x, notFlocking.getOrganism(i).location.y);
+        m_shapesNotFlocking[i].setPosition(m_notFlocking.getOrganism(i).m_location.x, m_notFlocking.getOrganism(i).m_location.y);
 
         // Calculates the angle where the velocity is pointing so that the triangle turns towards it.
-        float theta = notFlocking.getOrganism(i).angle(notFlocking.getOrganism(i).velocity);
-        shapesNotFlocking[i].setRotation(theta);
+        float theta = m_notFlocking.getOrganism(i).angle(m_notFlocking.getOrganism(i).m_velocity);
+        m_shapesNotFlocking[i].setRotation(theta);
 
         // Prevent boids from moving off the screen through wrapping
         // If boid exits right boundary
-        if (shapesNotFlocking[i].getPosition().x > width)
-            shapesNotFlocking[i].setPosition(shapesNotFlocking[i].getPosition().x - width, shapesNotFlocking[i].getPosition().y);
+        if (m_shapesNotFlocking[i].getPosition().x > m_width)
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x - m_width, m_shapesNotFlocking[i].getPosition().y);
         // If boid exits bottom boundary
-        if (shapesNotFlocking[i].getPosition().y > height)
-            shapesNotFlocking[i].setPosition(shapesNotFlocking[i].getPosition().x, shapesNotFlocking[i].getPosition().y - height);
+        if (m_shapesNotFlocking[i].getPosition().y > m_height)
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y - m_height);
         // If boid exits left boundary
-        if (shapesNotFlocking[i].getPosition().x < 0)
-            shapesNotFlocking[i].setPosition(shapesNotFlocking[i].getPosition().x + width, shapesNotFlocking[i].getPosition().y);
+        if (m_shapesNotFlocking[i].getPosition().x < 0)
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x + m_width, m_shapesNotFlocking[i].getPosition().y);
         // If boid exits top boundary
-        if (shapesNotFlocking[i].getPosition().y < 0)
-            shapesNotFlocking[i].setPosition(shapesNotFlocking[i].getPosition().x, shapesNotFlocking[i].getPosition().y + height);
+        if (m_shapesNotFlocking[i].getPosition().y < 0)
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y + m_height);
     }
 
     //Draw all of the Flocking Organisms.
-    for (int i = 0; i < shapes.size(); i++) 
+    for (int i = 0; i < m_shapes.size(); i++)
     {
-        window.draw(shapes[i]);
+        m_window.draw(m_shapes[i]);
 
         // Matches up the location of the shape to the boid
-        shapes[i].setPosition(flock.getOrganism(i).location.x, flock.getOrganism(i).location.y);
+        m_shapes[i].setPosition(m_flock.getOrganism(i).m_location.x, m_flock.getOrganism(i).m_location.y);
 
         // Calculates the angle where the velocity is pointing so that the triangle turns towards it.
-        float theta = flock.getOrganism(i).angle(flock.getOrganism(i).velocity);
-        shapes[i].setRotation(theta);
+        float theta = m_flock.getOrganism(i).angle(m_flock.getOrganism(i).m_velocity);
+        m_shapes[i].setRotation(theta);
 
         // Prevent boids from moving off the screen through wrapping
         // If boid exits right boundary
-        if (shapes[i].getPosition().x > width)
-            shapes[i].setPosition(shapes[i].getPosition().x - width, shapes[i].getPosition().y);
+        if (m_shapes[i].getPosition().x > m_width)
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x - m_width, m_shapes[i].getPosition().y);
         // If boid exits bottom boundary
-        if (shapes[i].getPosition().y > height)
-            shapes[i].setPosition(shapes[i].getPosition().x, shapes[i].getPosition().y - height);
+        if (m_shapes[i].getPosition().y > m_height)
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y - m_height);
         // If boid exits left boundary
-        if (shapes[i].getPosition().x < 0)
-            shapes[i].setPosition(shapes[i].getPosition().x + width, shapes[i].getPosition().y);
+        if (m_shapes[i].getPosition().x < 0)
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x + m_width, m_shapes[i].getPosition().y);
         // If boid exits top boundary
-        if (shapes[i].getPosition().y < 0)
-            shapes[i].setPosition(shapes[i].getPosition().x, shapes[i].getPosition().y + height);
+        if (m_shapes[i].getPosition().y < 0)
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y + m_height);
     }
     // Applies the three rules to each boid in the flock and changes them accordingly.
-    flock.flocking(20);
-    notFlocking.nonflocking(20);
+    m_flock.flocking(20);
+    m_notFlocking.nonflocking(20);
 
-    window.display();
+    m_window.display();
+}
+
+//Checks for collision between organism and food.
+bool Gui::isCollided(Organism organism, Food food)
+{
+    //Check the organism for collision with food objects.
+    float distance = organism.m_location.distance(food.m_position);
+
+    if (distance < 20)
+    {
+        return true;
+    }
+    
+    return false;
 }
