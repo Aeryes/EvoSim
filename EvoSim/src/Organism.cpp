@@ -324,18 +324,17 @@ float Organism::angle(const Pvector& v)
 void Organism::spendEnergy()
 {
     this->m_energyStore = this->m_energyStore - this->m_energyUseLevel;
-    cout << "ENERGY STORE: " << this->m_energyStore << endl;
 }
 
-//Getters and setters
-void Organism::setEnergyStore(int amount)
-{
-    this->m_energyStore = this->m_energyStore + amount;
-}
+/*
 
-int Organism::getEnergyStore()
+    Getters and Setters.
+
+*/
+//Setters
+void Organism::setEnergyStore(int value)
 {
-    return this->m_energyStore;
+    this->m_energyStore = this->m_energyStore + value;
 }
 
 void Organism::setEnergyUsetime(int value)
@@ -343,7 +342,33 @@ void Organism::setEnergyUsetime(int value)
     this->m_energyUseTime = value;
 }
 
+void Organism::setHealth(int value)
+{
+    m_health = value;
+}
+
+void Organism::setDefense(int value)
+{
+    m_defense = value;
+}
+
+//Getters
 int Organism::getEnergyUseTime()
 {
     return this->m_energyUseTime;
+}
+
+int Organism::getHealth()
+{
+    return m_health;
+}
+
+int Organism::getDefense()
+{
+    return m_defense;
+}
+
+int Organism::getEnergyStore()
+{
+    return this->m_energyStore;
 }

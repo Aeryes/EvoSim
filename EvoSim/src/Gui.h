@@ -28,10 +28,36 @@ public:
 	//Start a new clock for simulation elapsed time.
 	sf::Clock m_clock;
 
+	//Getters and setters.
+	int getWidth();
+	int getHeight();
+	int getFoodAmount();
+	int getFoodAmountRespawn();
+	int getStartingPop();
+	int getFoodRespawn();
+
+	float getOrganismSize();
+	float getFoodSize();
+
+	void setWidth(int value);
+	void setHeight(int value);
+	void setFoodAmount(int value);
+	void setFoodAmountRespawn(int value);
+	void setStartingPop(int value);
+	void setFoodRespawn(int value);
+	void setOrganismSize(float value);
+	void setFoodSize(float value);
+
 private:
 	int m_width;
 	int m_height;
-	int m_foodAmount = 50;
+	int m_foodAmount = 150;
+	int m_foodAmountRespawn = 20;
+	int m_startingPop = 10;
+	int m_foodRespawn = 20;
+
+	float m_organismSize;
+	float m_foodSize;
 
 	sf::RenderWindow m_window;
 
@@ -42,13 +68,11 @@ private:
 	sf::Font m_font;
 
 	sf::Clock m_simTimer;
+	sf::Clock m_foodTimer;
 	sf::Time  m_simTimerSeconds;
 
 	Flock m_flock;
 	Flock m_notFlocking;
-
-	float m_organismSize;
-	float m_foodSize;
 
 	vector<sf::CircleShape> m_shapes;
 	vector<sf::CircleShape> m_shapesNotFlocking;
@@ -61,7 +85,5 @@ private:
 	void displayText();
 
 	bool isCollided(Organism organism, Food food);
-
-	
 };
 

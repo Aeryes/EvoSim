@@ -71,11 +71,15 @@ public:
     float angle(const Pvector& v);
 
     //Getters and setters.
-    void setEnergyStore(int amount);
-    int getEnergyStore();
-
+    void setEnergyStore(int value);
     void setEnergyUsetime(int value);
+    void setHealth(int value);
+    void setDefense(int value);
+
+    int getEnergyStore();
     int getEnergyUseTime();
+    int getHealth();
+    int getDefense();
 
     void spendEnergy();
 

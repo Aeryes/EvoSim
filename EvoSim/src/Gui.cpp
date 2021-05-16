@@ -30,14 +30,14 @@ void PrintFullPath()
 
 Gui::Gui()
 {
-	m_organismSize = 10.0;
-    m_foodSize = 5.0;
+    setOrganismSize(10.0);
+    setFoodSize(5.0);
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
-	m_height = desktop.height;
-	m_width = desktop.width;
-	m_window.create(sf::VideoMode(m_width, m_height, desktop.bitsPerPixel), "EvoSim", sf::Style::None);
+    setHeight(desktop.height);
+    setWidth(desktop.width);
+	m_window.create(sf::VideoMode(getWidth(), getHeight(), desktop.bitsPerPixel), "EvoSim", sf::Style::None);
 
 	// Try to achieve 60 FPS.
 	m_window.setFramerateLimit(60);
@@ -69,19 +69,19 @@ void Gui::run()
     music.play();
 
     //Create initial organisms.
-	for (int i = 0; i < 5; i++) 
+	for (int i = 0; i < getStartingPop(); i++)
     {
-		Organism organism(m_width / 3, m_height / 3); // Starts all boids in the center of the screen
+		Organism organism(getWidth() / 3, getHeight() / 3); // Starts all boids in the center of the screen
 		sf::CircleShape shape(8, 3);
 
 		// Changing the Visual Properties of the shape
 		// shape.setPosition(b.location.x, b.location.y); // Sets position of shape to random location that boid was set to.
-		shape.setPosition(m_width, m_height); // Testing purposes, starts all shapes in the center of screen.
+		shape.setPosition(getWidth(), getHeight()); // Testing purposes, starts all shapes in the center of screen.
 		shape.setOutlineColor(sf::Color(0, 255, 0));
 		shape.setFillColor(sf::Color::Green);
 		shape.setOutlineColor(sf::Color::White);
 		shape.setOutlineThickness(1);
-		shape.setRadius(m_organismSize);
+		shape.setRadius(getOrganismSize());
 
         //Check to see if the Organism has the flock trait, if it does add to active flock.
         if(organism.m_hasFlockTrait)
@@ -97,18 +97,18 @@ void Gui::run()
 	}
 
     //Create food.
-    for (int i = 0; i < m_foodAmount; i++)
+    for (int i = 0; i < getFoodAmount(); i++)
     {
         //Create shape and food object.
         sf::CircleShape food(rand() % 100, 4);
 
         //Set the position of the food.
-        food.setPosition(rand() % 1920, rand() % 1080);
+        food.setPosition(rand() % getWidth(), rand() % getHeight());
         food.setOutlineColor(sf::Color(0, 255, 0));
         food.setFillColor(sf::Color::White);
         food.setOutlineColor(sf::Color::White);
         food.setOutlineThickness(2);
-        food.setRadius(m_foodSize);
+        food.setRadius(getFoodSize());
 
         Food foodObj(100, food);
 
@@ -127,7 +127,7 @@ void Gui::run()
         //Renders all of the organisms to the screen along with anything else that needs to be drawn.
 		render();
 	}
-};
+}
 
 //Handles simulation events such as collision detection and genetic mutations.
 void Gui::handleEvents()
@@ -138,7 +138,7 @@ void Gui::handleEvents()
         for (int k = 0; k < m_foodObjStorage.size(); k++)
         {
             //Get the amount of energy to add to the organism if food is consumed.
-            int energy = m_foodObjStorage[k].m_energyAmount;
+            int energy = m_foodObjStorage[k].getEnergyAmount();
 
             //If the organism collides with the food then add energy to its m_energyStore and remove the food.
             if (isCollided(m_flock.getOrganism(i), m_foodObjStorage[k]))
@@ -158,7 +158,7 @@ void Gui::handleEvents()
         for (int k = 0; k < m_foodObjStorage.size(); k++)
         {
             //Get the amount of energy to add to the organism if food is consumed.
-            int energy = m_foodObjStorage[k].m_energyAmount;
+            int energy = m_foodObjStorage[k].getEnergyAmount();
 
             //If the organism collides with the food then add energy to its m_energyStore and remove the food.
             if (isCollided(m_notFlocking.getOrganism(i), m_foodObjStorage[k]))
@@ -225,6 +225,33 @@ void Gui::handleEvents()
     //Display all the text vaalues to the screen.
     displayText();
 
+    //Create new food when the timer allows it.
+    sf::Time elapsed = m_foodTimer.getElapsedTime();
+    int amount = rand() % ((getFoodAmountRespawn() + 1) - 1);
+
+    if (elapsed.asSeconds() >= getFoodRespawn())
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            //Create shape and food object.
+            sf::CircleShape food(rand() % 100, 4);
+
+            //Set the position of the food.
+            food.setPosition(rand() % 1920, rand() % 1080);
+            food.setOutlineColor(sf::Color(0, 255, 0));
+            food.setFillColor(sf::Color::White);
+            food.setOutlineColor(sf::Color::White);
+            food.setOutlineThickness(2);
+            food.setRadius(getFoodSize());
+
+            Food foodObj(100, food);
+
+            m_foodObjStorage.push_back(foodObj);
+        }
+
+        m_foodTimer.restart();
+
+    }
 }
 
 void Gui::handleInput()
@@ -261,7 +288,7 @@ void Gui::handleInput()
         shape.setFillColor(sf::Color(255, 0, 0));
         shape.setOutlineColor(sf::Color::White);
         shape.setOutlineThickness(1);
-        shape.setRadius(m_organismSize);
+        shape.setRadius(getOrganismSize());
 
         // Adds newly created Organism and shape to their respective data structure
         //Check to see if the Organism has the flock trait, if it does add to active flock.
@@ -323,17 +350,17 @@ void Gui::render()
 
         // Prevent boids from moving off the screen through wrapping
         // If boid exits right boundary
-        if (m_shapesNotFlocking[i].getPosition().x > m_width)
-            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x - m_width, m_shapesNotFlocking[i].getPosition().y);
+        if (m_shapesNotFlocking[i].getPosition().x > getWidth())
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x - getWidth(), m_shapesNotFlocking[i].getPosition().y);
         // If boid exits bottom boundary
-        if (m_shapesNotFlocking[i].getPosition().y > m_height)
-            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y - m_height);
+        if (m_shapesNotFlocking[i].getPosition().y > getHeight())
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y - getHeight());
         // If boid exits left boundary
         if (m_shapesNotFlocking[i].getPosition().x < 0)
-            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x + m_width, m_shapesNotFlocking[i].getPosition().y);
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x + getWidth(), m_shapesNotFlocking[i].getPosition().y);
         // If boid exits top boundary
         if (m_shapesNotFlocking[i].getPosition().y < 0)
-            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y + m_height);
+            m_shapesNotFlocking[i].setPosition(m_shapesNotFlocking[i].getPosition().x, m_shapesNotFlocking[i].getPosition().y + getHeight());
     }
 
     //Draw all of the Flocking Organisms.
@@ -350,17 +377,17 @@ void Gui::render()
 
         // Prevent boids from moving off the screen through wrapping
         // If boid exits right boundary
-        if (m_shapes[i].getPosition().x > m_width)
-            m_shapes[i].setPosition(m_shapes[i].getPosition().x - m_width, m_shapes[i].getPosition().y);
+        if (m_shapes[i].getPosition().x > getWidth())
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x - getWidth(), m_shapes[i].getPosition().y);
         // If boid exits bottom boundary
-        if (m_shapes[i].getPosition().y > m_height)
-            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y - m_height);
+        if (m_shapes[i].getPosition().y > getHeight())
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y - getHeight());
         // If boid exits left boundary
         if (m_shapes[i].getPosition().x < 0)
-            m_shapes[i].setPosition(m_shapes[i].getPosition().x + m_width, m_shapes[i].getPosition().y);
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x + getWidth(), m_shapes[i].getPosition().y);
         // If boid exits top boundary
         if (m_shapes[i].getPosition().y < 0)
-            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y + m_height);
+            m_shapes[i].setPosition(m_shapes[i].getPosition().x, m_shapes[i].getPosition().y + getHeight());
     }
     // Applies the three rules to each boid in the flock and changes them accordingly.
     m_flock.flocking(20);
@@ -368,6 +395,12 @@ void Gui::render()
 
     m_window.display();
 }
+
+/*
+
+    Events: The fuctions below deal with simulation events that are handled from within the handleEvents() function.
+
+*/
 
 //Checks for collision between organism and food.
 bool Gui::isCollided(Organism organism, Food food)
@@ -456,4 +489,92 @@ void Gui::displayText()
     int timeTemp = m_simTimerSeconds.asSeconds();
     auto resultTime = std::to_string(timeTemp);
     m_timeElapsed.setString("Time Elapsed (Seconds): " + resultTime);
+}
+
+/*
+
+    Getters and Setters
+
+*/
+
+//Getters.
+int Gui::getWidth()
+{
+    return m_width;
+}
+
+int Gui::getHeight()
+{
+    return m_height;
+}
+
+int Gui::getFoodAmount()
+{
+    return m_foodAmount;
+}
+
+int Gui::getFoodAmountRespawn()
+{
+    return m_foodAmountRespawn;
+}
+
+int Gui::getStartingPop()
+{
+    return m_startingPop;
+}
+
+int Gui::getFoodRespawn()
+{
+    return m_foodRespawn;
+}
+
+float Gui::getOrganismSize()
+{
+    return m_organismSize;
+}
+
+float Gui::getFoodSize()
+{
+    return m_foodSize;
+}
+
+//Setters.
+void Gui::setWidth(int value)
+{
+    m_width = value;
+}
+
+void Gui::setHeight(int value)
+{
+    m_height = value;
+}
+
+void Gui::setFoodAmount(int value)
+{
+    m_foodAmount = value;
+}
+
+void Gui::setFoodAmountRespawn(int value)
+{
+    m_foodAmountRespawn = value;
+}
+
+void Gui::setStartingPop(int value)
+{
+    m_startingPop = value;
+}
+
+void Gui::setFoodRespawn(int value)
+{
+    m_foodRespawn = value;
+}
+
+void Gui::setOrganismSize(float value)
+{
+    m_organismSize = value;
+}
+
+void Gui::setFoodSize(float value)
+{
+    m_foodSize = value;
 }

@@ -10,7 +10,7 @@
 
 Food::Food(int energyAmount, sf::CircleShape shape)
 {
-	m_energyAmount = energyAmount;
+	setEnergyAmount(energyAmount);
 	m_shape = shape;
 }
 
@@ -20,6 +20,16 @@ void Food::setPosition(Pvector vector)
 	//sf::Vector2f sfmlPosition = m_shape.getPosition();
 	m_position.x = vector.x;
 	m_position.y = vector.y;
+}
+
+void Food::setEnergyAmount(int value)
+{
+	m_energyAmount = value;
+}
+
+int Food::getEnergyAmount()
+{
+	return m_energyAmount;
 }
 
 Pvector Food::getPosition()

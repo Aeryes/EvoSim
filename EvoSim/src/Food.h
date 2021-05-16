@@ -17,12 +17,17 @@ public:
 	//Constrcutor;
 	Food(int energyLevel, sf::CircleShape shape);
 
-	int m_energyAmount;
 	Pvector m_position;
 	sf::CircleShape m_shape;
 
 	//Getters and setters.
 	void setPosition(Pvector position);
+	void setEnergyAmount(int value);
+
+	int getEnergyAmount();
 	Pvector getPosition();
+
+private:
+	int m_energyAmount;
 };
 

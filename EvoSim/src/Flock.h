@@ -25,6 +25,8 @@ public:
     //Constructors
     Flock() {}
 
+    vector<Organism> flock;
+
     // Accessor functions
     int getSize();
     Organism &getOrganism(int i);
@@ -35,9 +37,6 @@ public:
     void addOrganism(const Organism& b);
     void flocking(float separation);
     void nonflocking(float separation);
-
-//private:
-    vector<Organism> flock;
 };
 
 
