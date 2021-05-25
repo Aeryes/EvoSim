@@ -19,7 +19,7 @@ All of the code is well documented to make it easier for others to build upon or
 
 The repo contains the Visual Studio project files and libraries that are needed for the project to work inside the Visual Studio enviornment.
 
-##Libraries used:
+## Libraries used:
 - SFML 2.5.1
 
 This projects greatly extends and builds upon the repo found here:
