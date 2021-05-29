@@ -10,12 +10,13 @@ All of the code is well documented to make it easier for others to build upon or
 
 ## Traits List:
 - Predator
-- Slower Starvation
+- Slower starvation
 - Flocking
-- Increased Health
-- Increased Defense
-- Increased Attack
-- Increased Size
+- Increased health
+- Increased defense
+- Increased attack
+- Increased offspring amount
+- Reduced reproduction wait time
 
 The repo contains the Visual Studio project files and libraries that are needed for the project to work inside the Visual Studio enviornment.
 
