@@ -54,7 +54,7 @@ private:
 	int m_foodAmount = 150;
 	int m_foodAmountRespawn = 20;
 	int m_startingPop = 10;
-	int m_foodRespawn = 20;
+	int m_foodRespawn = 10;
 
 	float m_organismSize;
 	float m_foodSize;
@@ -69,6 +69,7 @@ private:
 
 	sf::Clock m_simTimer;
 	sf::Clock m_foodTimer;
+	sf::Clock m_reproductionTimer;
 	sf::Time  m_simTimerSeconds;
 
 	Flock m_flock;
@@ -85,5 +86,8 @@ private:
 	void displayText();
 
 	bool isCollided(Organism organism, Food food);
+
+	//Adaption functons for organisms.
+	void createOrganism(Organism parent);
 };
 

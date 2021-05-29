@@ -202,23 +202,55 @@ void Gui::handleEvents()
         }
     }
 
-    //Remove non-flocking organisms with < 0 energy storage.
+    //Start depeleting non-flocking organisms health when their energy store hits 0.
     for (int i = 0; i < m_notFlocking.getSize(); i++)
     {
-        if (m_notFlocking.getOrganism(i).getEnergyStore() <= 0)
+        sf::Time elapsed = m_notFlocking.getOrganism(i).m_healthTimer.getElapsedTime();
+
+        int timeToDrainHealth = 2;
+
+        if (elapsed.asSeconds() >= timeToDrainHealth)
         {
-            m_notFlocking.removeOrganism(i);
-            m_shapesNotFlocking.erase(m_shapesNotFlocking.begin() + i);
+            if (m_notFlocking.getOrganism(i).getEnergyStore() <= 0)
+            {
+                //Starvation process.
+                m_notFlocking.getOrganism(i).starvation();
+
+                //Check to see if the organisms health reaches 0. Kill it if it is.
+                if (m_notFlocking.getOrganism(i).getHealth() <= 0)
+                {
+                    m_notFlocking.removeOrganism(i);
+                    m_shapesNotFlocking.erase(m_shapesNotFlocking.begin() + i);
+                }
+            }
+
+            m_notFlocking.getOrganism(i).m_healthTimer.restart();
         }
     }
 
-    //Remove flocking organisms with , 0 energy storage.
+    //Start depeleting flocking organisms health when their energy store hits 0.
     for (int i = 0; i < m_flock.getSize(); i++)
     {
-        if (m_flock.getOrganism(i).getEnergyStore() <= 0)
+        sf::Time elapsed = m_flock.getOrganism(i).m_healthTimer.getElapsedTime();
+
+        int timeToDrainHealth = 2;
+
+        if (elapsed.asSeconds() >= timeToDrainHealth)
         {
-            m_flock.removeOrganism(i);
-            m_shapes.erase(m_shapes.begin() + i);
+            if (m_flock.getOrganism(i).getEnergyStore() <= 0)
+            {
+                //Starvation process.
+                m_flock.getOrganism(i).starvation();
+
+                //Check to see if the organisms health reaches 0. Kill it if it is.
+                if (m_flock.getOrganism(i).getHealth() <= 0)
+                {
+                    m_flock.removeOrganism(i);
+                    m_shapes.erase(m_shapes.begin() + i);
+                }
+            }
+
+            m_flock.getOrganism(i).m_healthTimer.restart();
         }
     }
 
@@ -250,8 +282,67 @@ void Gui::handleEvents()
         }
 
         m_foodTimer.restart();
-
     }
+
+    //Asexual reproduction event for both flocking and non-floccking orgaisms.
+    //Non-flocking.
+    for (int i = 0; i < m_notFlocking.getSize(); i++)
+    {
+        sf::Time elapsed = m_notFlocking.getOrganism(i).m_reproduceTimer.getElapsedTime();
+
+        //Check to see if it is time to reproduce.
+        if (elapsed.asSeconds() >= m_notFlocking.getOrganism(i).getTimeUntilReproduce())
+        {
+            if (m_notFlocking.getOrganism(i).getEnergyStore() >=500)
+            {
+                //Check to make sure the organism is in good health.
+                if (m_notFlocking.getOrganism(i).getHealth() >= 50)
+                {
+                    //Creating a new child organism based on parents offspring amount value.
+                    for (int i = 0; i < m_notFlocking.getOrganism(i).getOffSpringAmount(); i++)
+                    {
+                        createOrganism(m_notFlocking.getOrganism(i));
+                        cout << "CreateOrganism activated..." << endl;
+                    }
+
+                    //Removing energy needed to pro-create.
+                    m_notFlocking.getOrganism(i).reduceEnergy(200);
+                }
+            }
+
+            m_notFlocking.getOrganism(i).m_reproduceTimer.restart();
+        }
+    }
+
+    //Flocking.
+    for (int i = 0; i < m_flock.getSize(); i++)
+    {
+        sf::Time elapsed = m_flock.getOrganism(i).m_reproduceTimer.getElapsedTime();
+
+        //Check to see if it is time to reproduce.
+        if (elapsed.asSeconds() >= m_flock.getOrganism(i).getTimeUntilReproduce())
+        {
+            if (m_flock.getOrganism(i).getEnergyStore() >= 500)
+            {
+                //Check to make sure the organism is in good health.
+                if (m_flock.getOrganism(i).getHealth() >= 50)
+                {
+                    //Creating a new child organism based on parents offspring amount value.
+                    for (int i = 0; i < m_flock.getOrganism(i).getOffSpringAmount(); i++)
+                    {
+                        createOrganism(m_flock.getOrganism(i));
+                        cout << "CreateOrganism activated..." << endl;
+                    }
+
+                    //Removing energy needed to pro-create.
+                    m_flock.getOrganism(i).reduceEnergy(200);
+                }
+            }
+
+            m_flock.getOrganism(i).m_reproduceTimer.restart();
+        }
+    }
+
 }
 
 void Gui::handleInput()
@@ -309,10 +400,10 @@ void Gui::handleInput()
 }
 
 /*
+
     Gui::Render => This function draws all Organisms to the screen. First we render the Organisms that
     do not have the flocking trait, then we render all the ones that do.
 
-    TODO => This is where movement will need to take place for Organisms that are not in a flock.
 */
 void Gui::render()
 {
@@ -428,7 +519,7 @@ void Gui::loadText()
     }
 
     //DEBUG
-    PrintFullPath();
+    //PrintFullPath();
 
     m_text.setFont(m_font); // font is a sf::Font
     // set the string to display
@@ -489,6 +580,56 @@ void Gui::displayText()
     int timeTemp = m_simTimerSeconds.asSeconds();
     auto resultTime = std::to_string(timeTemp);
     m_timeElapsed.setString("Time Elapsed (Seconds): " + resultTime);
+}
+
+/*
+
+    Adaption functions.
+
+*/
+
+//These functions create a new organism using a copy of the parent.
+//This function should only be called in the events function of the main loop.
+void Gui::createOrganism(Organism parent)
+{
+    //Create a new Organism object 
+    Organism child(parent.m_location.x, parent.m_location.y);
+
+    //Sets the new organism object's fields to be the same as its parent.
+    child.setAcceleration(parent.getAcceleration());
+    child.setVelocity(parent.getVelocity());
+    child.setMaxSpeed(parent.getMaxSpeed());
+    child.setMaxForce(parent.getMaxForce());
+    child.setPredator(parent.getPredator());
+    child.setHasFlockTrait(parent.getHasFlockTrait());
+    child.setDesiredSep(parent.getDesiredSep());
+    child.setHealth(parent.getHealth());
+    child.setEnergyStore(parent.getEnergyStore());
+    child.setEnergyUsetime(parent.getEnergyUseTime());
+    child.setDefense(parent.getDefense());
+
+    //Add the new object to the object vector and create and add a new shape to the shape vector.
+    sf::CircleShape shape(8, 3);
+
+    // Changing the Visual Properties of the shape
+    shape.setPosition(getWidth(), getHeight()); // Testing purposes, starts all shapes in the center of screen.
+    shape.setOutlineColor(sf::Color(0, 255, 0));
+    shape.setFillColor(sf::Color::Green);
+    shape.setOutlineColor(sf::Color::White);
+    shape.setOutlineThickness(1);
+    shape.setRadius(getOrganismSize());
+
+    //Check to see if the Organism has the flock trait, if it does add to active flock.
+    if (child.m_hasFlockTrait)
+    {
+        m_flock.addOrganism(child);
+        m_shapes.push_back(shape);
+    }
+    else
+    {
+        m_notFlocking.addOrganism(child);
+        m_shapesNotFlocking.push_back(shape);
+    }
 }
 
 /*

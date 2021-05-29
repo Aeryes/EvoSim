@@ -326,11 +326,34 @@ void Organism::spendEnergy()
     this->m_energyStore = this->m_energyStore - this->m_energyUseLevel;
 }
 
+void Organism::reduceEnergy(int amount)
+{
+    this->m_energyStore = this->m_energyStore - amount;
+}
+
+/*
+
+    Adaption functions: These functions work on various adaptions that each organism can adapt to have. The functions work
+    by using weights to affect the end result.
+
+*/
+
+//This function deals with the starvation mechanism when an organism runs out of energy to spend. Adaptions to an organisms
+//starvation weight can affect the rate of starvation, allowing an organism to survive for longer without food. 
+void Organism::starvation()
+{
+    //This is the amount of health that will be drained for every second the organism has no energy stored.
+    int rate = (this->m_healthDrain - ((this->m_starvationWeight / this->m_healthDrain) * 100));
+
+    this->m_health = this->m_health - rate;
+}
+
 /*
 
     Getters and Setters.
 
 */
+
 //Setters
 void Organism::setEnergyStore(int value)
 {
@@ -344,12 +367,60 @@ void Organism::setEnergyUsetime(int value)
 
 void Organism::setHealth(int value)
 {
-    m_health = value;
+    this->m_health = value;
 }
 
 void Organism::setDefense(int value)
 {
-    m_defense = value;
+    this->m_defense = value;
+}
+
+void Organism::setLocation(Pvector location)
+{
+    this->m_location.x = location.x;
+    this->m_location.y = location.y;
+}
+
+void Organism::setVelocity(Pvector velocity)
+{
+    this->m_velocity.x = velocity.x;
+    this->m_velocity.y = velocity.y;
+}
+
+void Organism::setAcceleration(Pvector acceleration)
+{
+    this->m_acceleration.x = acceleration.x;
+    this->m_acceleration.y = acceleration.y;
+}
+
+void Organism::setHasFlockTrait(bool trait)
+{
+    this->m_hasFlockTrait = trait;
+}
+
+void Organism::setDesiredSep(float sep)
+{
+    this->m_desiredseparation = sep;
+}
+
+void Organism::setMaxSpeed(float speed)
+{
+    this->m_maxSpeed = speed;
+}
+
+void Organism::setMaxForce(float force)
+{
+    this->m_maxForce = force;
+}
+
+void Organism::setPredator(bool value)
+{
+    this->m_predator = value;
+}
+
+void Organism::setOffSpringAmount(int value)
+{
+    this->m_offspringAmount = value;
 }
 
 //Getters
@@ -360,12 +431,62 @@ int Organism::getEnergyUseTime()
 
 int Organism::getHealth()
 {
-    return m_health;
+    return this->m_health;
 }
 
 int Organism::getDefense()
 {
-    return m_defense;
+    return this->m_defense;
+}
+
+int Organism::getTimeUntilReproduce()
+{
+    return this->m_timeUntilReproduce;
+}
+
+int Organism::getOffSpringAmount()
+{
+    return this->m_offspringAmount;
+}
+
+Pvector Organism::getLocation()
+{
+    return this->m_location;
+}
+
+Pvector Organism::getVelocity()
+{
+    return this->m_velocity;
+}
+
+Pvector Organism::getAcceleration()
+{
+    return this->m_acceleration;
+}
+
+bool Organism::getHasFlockTrait()
+{
+    return this->m_hasFlockTrait;
+}
+
+bool Organism::getPredator()
+{
+    return this->m_predator;
+}
+
+float Organism::getDesiredSep()
+{
+    return this->m_desiredseparation;
+}
+
+float Organism::getMaxSpeed()
+{
+    return this->m_maxSpeed;
+}
+
+float Organism::getMaxForce()
+{
+    return this->m_maxForce;
 }
 
 int Organism::getEnergyStore()

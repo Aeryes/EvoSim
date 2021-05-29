@@ -1,4 +1,7 @@
-﻿  Gui.cpp
+﻿  Flock.cpp
+C:\VS Projects\EvoSim\EvoSim\src\Flock.cpp(39,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Flock.cpp(45,23): warning C4018: '<': signed/unsigned mismatch
+  Gui.cpp
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(74,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(74,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(79,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -8,13 +11,15 @@ C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(106,54): warning C4244: 'argument': con
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(106,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(138,27): warning C4018: '<': signed/unsigned mismatch
 C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(158,27): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(237,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(240,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(240,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(328,23): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(340,23): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(367,23): warning C4018: '<': signed/unsigned mismatch
-C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(489,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(269,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(272,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(272,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(419,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(431,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(458,23): warning C4018: '<': signed/unsigned mismatch
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(580,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(615,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VS Projects\EvoSim\EvoSim\src\Gui.cpp(615,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Organism.cpp
 C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(30,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(30,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -30,5 +35,6 @@ C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(225,32): warning C4305: 'argument'
 C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(244,32): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(259,67): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\VS Projects\EvoSim\EvoSim\src\Organism.cpp(259,49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
   Generating Code...
   EvoSim.vcxproj -> C:\VS Projects\EvoSim\Debug\EvoSim.exe

@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="src\Flock.h" />
     <ClInclude Include="src\Food.h" />
-    <ClInclude Include="src\Genetics.h" />
     <ClInclude Include="src\Gui.h" />
     <ClInclude Include="src\Organism.h" />
     <ClInclude Include="src\Pvector.h" />
@@ -29,7 +28,6 @@
   <ItemGroup>
     <ClCompile Include="src\Flock.cpp" />
     <ClCompile Include="src\Food.cpp" />
-    <ClCompile Include="src\Genetics.cpp" />
     <ClCompile Include="src\Gui.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Organism.cpp" />

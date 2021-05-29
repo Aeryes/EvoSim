@@ -19,7 +19,6 @@
 #include "Pvector.h"
 #include "SFML/System.hpp"
 #include "SFML/Graphics.hpp"
-#include <Genetics.h>
 
 class Organism
 {
@@ -38,13 +37,12 @@ public:
     //Trait values.
     bool m_predator;
 
-    //This vector contains a list of trait object belonging to the organism.
-    vector<Genetics> m_traitList;
-
     //Timers.
     sf::Clock m_movementClock;
     sf::Clock m_energyTimer;
     sf::Clock m_mutationTimer;
+    sf::Clock m_healthTimer;
+    sf::Clock m_reproduceTimer;
 
     //Flocking fields.
     bool m_hasFlockTrait = false;
@@ -58,7 +56,7 @@ public:
     Pvector alignment(const vector<Organism>& Organsims);
     Pvector cohesion(const vector<Organism>& Organisms);
 
-    //Functions involving visualisation linking
+    //Prototypes involving visualisation linking
     Pvector seek(const Pvector& v);
 
     void run(const vector<Organism>& v, float sep);
@@ -66,7 +64,6 @@ public:
     void update();
     void updateNonFlock();
     void flock(const vector<Organism>& v, float separaton);
-    void nonFlockMovement(const vector<Organism>& v, float separation);
     void borders();
     float angle(const Pvector& v);
 
@@ -75,22 +72,66 @@ public:
     void setEnergyUsetime(int value);
     void setHealth(int value);
     void setDefense(int value);
+    void setLocation(Pvector location);
+    void setVelocity(Pvector velocity);
+    void setAcceleration(Pvector acceleration);
+    void setHasFlockTrait(bool trait);
+    void setDesiredSep(float sep);
+    void setMaxSpeed(float speed);
+    void setMaxForce(float force);
+    void setPredator(bool value);
+    void setOffSpringAmount(int value);
 
     int getEnergyStore();
     int getEnergyUseTime();
     int getHealth();
     int getDefense();
+    int getTimeUntilReproduce();
+    int getOffSpringAmount();
+
+    Pvector getLocation();
+    Pvector getVelocity();
+    Pvector getAcceleration();
+
+    bool getHasFlockTrait();
+    bool getPredator();
+
+    float getDesiredSep();
+    float getMaxSpeed();
+    float getMaxForce();
 
     void spendEnergy();
+    void reduceEnergy(int amount);
+
+    //Prototypes for functions affected by adaption.
+    //Lifecycle prototypes.
+    void starvation();
+
+    //Direct adaption prototypes.
 
 private:
     //Organism life values.
     int m_health = 100;
-    int m_defense = 0;
-    int m_attack = 0;
+    int m_healthDrain = 20;
+    int m_defense = 100;
+    int m_attack = 10;
     int m_energyStore = 200;
     int m_energyUseLevel = 100;
     int m_energyUseTime = 10;
+
+    //Adaption weights.
+    //Adaption weights are % based modifiers.
+    //Health modifiers.
+    int m_starvationWeight = 0;
+
+    //Sexual reproduction modifiers.
+    //Organisms main goal is to reproduce and create copies.
+
+    //Time in seconds.
+    int m_timeUntilReproduce = 20;
+
+    //Number of copies to make.
+    int m_offspringAmount = 1;
 };
 
 
