@@ -23,7 +23,7 @@ The repo contains the Visual Studio project files and libraries that are needed 
 ## Libraries used:
 - SFML 2.5.1
 
-This projects greatly extends and builds upon the repo found here:
+This project greatly extends and builds upon the repo found here:
 https://github.com/jyanar/Boids
 
 SFML can be downloaded here:
